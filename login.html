@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
-		<link rel="icon" href="mundusicons/favicon.ico"/>
+		<link rel="icon" href="icons/favicon.ico"/>
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-loading">
@@ -20,15 +20,15 @@
 				<!-- Main -->
 					<section id="main">
 						<header>
-							<span class="avatar"><img src="mundusicons/apple-touch-icon-180x180.png" alt="" /></span>
+							<span class="avatar"><img src="icons/apple-touch-icon-180x180.png" alt="" /></span>
 							<h1>QuikBux</h1>
 							<p>Make a quick buck by completing a small chore!</p>
-							<a href="munduslanding/index.html" class="button">Learn More</a>
+							<a href="index.html" class="button">Learn More</a>
 						</header>
 						
 						<hr />
 						<h2>Log In</h2>
-						<p>New to QuikBux? Sign up <a style="color: red" href="index.html">here</a></p>
+						<p>New to QuikBux? Sign up <a style="color: red" href="signup.html">here</a></p>
 
 						<form method="post" action="#">
 							<div class="field">
@@ -38,7 +38,7 @@
 								<input type="password" name="password" id="password" placeholder="Password" />
 							</div>
 							<ul class="actions">
-								<li><a href="#" id="logIn" class="button">Log In</a></li>
+								<li><a href="main.html" id="logIn" class="button">Log In</a></li>
 							</ul>
 						</form>
 						<hr />
@@ -70,7 +70,8 @@
 				}
 				
 				$("#logIn").click(function(e) {
-					window.location.href = "index.html";
+					var email = $("#email").val();
+					var password = $("#password").val();
 				});
 			</script>
 
