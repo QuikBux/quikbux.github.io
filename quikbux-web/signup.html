@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Mundus</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="icon" href="mundusicons/favicon.ico" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+</head>
+
+<body class="is-loading">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <section id="main">
+        	<!--The Header With the picture-->
+            <header>
+                <span class="avatar"><img src="mundusicons/apple-touch-icon-180x180.png" alt="" /></span>
+                <h1>QuikBux</h1>
+                <p>Make a quick buck by completing a small chore!</p>
+                <a href="munduslanding/index.html" class="button">Learn More</a>
+            </header>
+
+
+            <hr />
+
+            <!--All the Sign Up Stuff-->
+            <h2>Sign Up</h2>
+            <p>Already have an account? Login <a style="color: red" href="login.html">here</a></p>
+
+            <form method="post" action="#">
+            	<!--All the text boxes-->
+                <div class="field">
+                    <input type="text" name="name" id="name" placeholder="Name" />
+                </div>
+                <div class="field">
+                    <input type="email" name="email" id="email" placeholder="Email" />
+                </div>
+                <div class="field">
+                    <input type="password" name="password" id="password" placeholder="Password" />
+                </div>
+                <div class="field">
+                    <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" />
+                </div>
+
+                <!--Selecting the type of developer-->
+                <div class="field">
+                    <div class="select-wrapper">
+                        <select name="department" id="department">
+                            <option value="">Developer</option>
+                            <option value="sales">Full-Stack Developer</option>
+                            <option value="null">Back-End Developer</option>
+                            <option value="null">Front-End Developer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--The Status textbox-->
+
+                <div class="field">
+                    <textarea name="message" id="message" placeholder="Status" rows="1"></textarea>
+                </div>
+                <div class="field">
+                    <input type="checkbox" id="human" name="human" />
+                    <label for="human">I'm a human</label>
+                </div>
+
+                <!--Are you a robot?-->
+                <div class="field">
+                    <label>But are you a robot?</label>
+                    <input type="radio" id="robot_yes" name="robot" />
+                    <label for="robot_yes">Yes</label>
+                    <input type="radio" id="robot_no" name="robot" />
+                    <label for="robot_no">No</label>
+                </div>
+
+                <!--Sign Up Button-->
+                <ul class="actions">
+                    <li><a href="#" class="button">Get Started</a></li>
+                </ul>
+
+            </form>
+
+            <hr />
+
+            <!--Social Network Buttons-->
+            <footer>
+                <ul class="icons">
+                    <li><a href="#" class="fa-twitter">Twitter</a></li>
+                    <li><a href="#" class="fa-instagram">Instagram</a></li>
+                    <li><a href="#" class="fa-facebook">Facebook</a></li>
+                </ul>
+            </footer>
+
+        </section>
+
+        <!-- Footer with Copyright -->
+        <footer id="footer">
+            <ul class="copyright">
+                <li>&copy; Mundus 2015, All Rights Reserved</li>
+            </ul>
+        </footer>
+    </div>
+    <!-- Scripts -->
+    <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+    <script>
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function() {
+            document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+    </script>
+</body>
+
+</html>
