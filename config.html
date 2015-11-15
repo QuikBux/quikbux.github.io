@@ -48,7 +48,7 @@
                 <div class="field">
                     <textarea required name="status" id="status" placeholder="Please tell us about yourself" rows="1"></textarea>
                 </div>
-                <a style="text-transform: uppercase;" id="done" class="button">Done</a>
+                <button style="text-transform: uppercase;" id="done" class="button">Done</button>
             </form>
             <hr />
             <!--Social Network Buttons-->
@@ -63,57 +63,68 @@
     </div>
     <!-- Scripts -->
     <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
-   
     <script>
     var ref = new Firebase('https://makehacks.firebaseio.com/');
     var usersRef = ref.child('users');
 
-    $("#done").click(function(e) {
+    $("#done").click(success);
+
+    var pic = "";
+
+    //converts file to base64 encoded string
+    var input = document.getElementById('file');
+    input.onchange = function() {
+        console.log("aeuae")
+        pic = $("#file")[0].files[0]
+
+        var reader = new FileReader();
+
+        reader.onload = function(readerEvt) {
+            var binaryString = readerEvt.target.result;
+            var encodedData = btoa(binaryString)
+            pic = 'data:image/gif;base64,' + encodedData;
+            
+        };
+
+        reader.readAsBinaryString(pic);
+    };
+
+    function success(e) {
+        e.preventDefault();
+
         var info = {
             type: $("#department option:selected").text(),
             city: $("#city").val(),
             description: $("#status").val(),
-            pic: "",
+            pic: pic,
             skills: $("#skills").val()
         }
-        var files = $("#file")[0].files;
+        
 
-        $.ajax({
-            type: "GET",
-            url: "https://maps.googleapis.com/maps/api/geocode/xml?address=" + encodeURIComponent(city) + "&key=AIzaSyCph8xf4Aw1o3-5HkTR_uOKIA_N4Ms5naY",
-            dataType: "xml",
-            success: success,
-            error: error
-        });
+        //verify whether the user has completed the form
+        if (info.description != "") {
+            $.each(['pic', 'type', 'description', 'city', 'skills'], function(i, value) {
 
-        function success() {
-            //converts file to base64 encoded string
-            if (files.length > 0 && files[0].type.substring(0, 5) == 'image') {
-                info.pic = btoa(files[0]);
-            }
+                console.log(value + " " + user);
+                usersRef.child(user).child(value).set(info[value]);
+            });
 
-            //verify whether the user has completed the form
-            if (info.description != "") {
-                $.each(['pic', 'type', 'description', 'city', 'skills'], function(i, value) {
+            usersRef.child(user).child('temp').set(true);
 
-                    console.log(value + " " + user)
+            setTimeout(function() {
+                window.location.href = "home.html"
+            }, 500);
 
-                    usersRef.child(user).child(value).set(info[value]);
-                });
-
-                usersRef.child(user).child('temp').set(true);
-
-                window.location.href = "home.html";
-            } else {
-                $("#error").html("Please enter a description.");
-            }
+        } else {
+            $("#error").html("Please enter a description.");
         }
+    }
 
-        function error() {
-            $("#error").html("Please enter a valid city");
-        }
+    function error() {
+        $("#error").html("Please enter a valid city");
+    }
 
-    });
+    
 
 
     if ('addEventListener' in window) {

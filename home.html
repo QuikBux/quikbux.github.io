@@ -25,6 +25,8 @@
     </script>
     <script type="text/javascript" src="googlemaps.js">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+
 </head>
 
 <body class="is-loading">
@@ -35,22 +37,22 @@
         <div id="navbar">
             <h1 id="brand">QuikBux</h1>
             <ul id="list">
-                <li><a onclick="ref.logout(); window.location.href='index.html';">Logout</a></li>
-                <li><a id="finding" href="home.html">Find Workers</a></li>
-                <li><a id="listings" href="posts.html">My Job Listings</a></li>
+                <li id="logOut"><a onclick="ref.logout(); window.location.href='index.html';">Logout</a></li>
+                <li><a id="finding" href="home.html"></a></li>
+                <li><a id="listings" href="posts.html"></a></li>
                 <li><a href="profile.html">My Profile</a></li>
             </ul>
         </div>
 
         <br/>
-        <h1 style="display: none;" id="welcome">Welcome</h1>
 
-        <br/>
-
-        <h2 id="tableTitle"></h1>
-        
-        <br/>
-        
+        <section class="jumbotron" id="main">
+            <h1 style="display: none;" id="welcome">Welcome</h1>
+            <h2>QuikBux, no more searching, only earning</h1>
+            <h3 id="tableTitle">Find all available workers near you now</h3>
+            <button class="button" id="close">Close</button>
+        </section>
+  
         <div id="tableView">
         </div>
         <br/>
@@ -59,6 +61,7 @@
         <footer id="footer">
             <ul class="copyright">
                 <li>&copy; QuikBux 2015, All Rights Reserved</li>
+                <li><a href="home.html">Back to Top</a></li>
             </ul>
         </footer>
     </div>
@@ -71,9 +74,14 @@
         $("#welcome").html($("#welcome").html() + " " + userName + "!");
         $("#welcome").addClass("animated slow fadeIn");
         $("#welcome").css("display", "block");
+
+        $("#close").click(function(e) {
+            e.preventDefault();
+            $(".jumbotron").fadeOut();
+        });
+
         console.log(userType);
 
-      
 
         if (userType == "client") {
 
@@ -94,6 +102,7 @@
             $("#tableTitle").html("Here are all the job listings posted by people near you.");
             $("#listings").html("My Public Profile");
             $("#finding").html("Find Jobs");
+
 
             appendWorkerTable();
 
@@ -134,7 +143,7 @@
 
                         if (count == 2) {
 
-                            str += '<br/>' + '<td id="' + adid + '">' +
+                            str +=  '<td id="' + adid + '">' +
                                 '<section class="animated fadeIn" style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
                                 '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Job Type: ' + jobType + '</h2>' +
                                 '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
@@ -200,7 +209,7 @@
 
                         if (count == 2) {
 
-                            str += '<br/>' + '<td id="' + userid + '">' +
+                            str += '<td id="' + userid + '">' +
                                 '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
                                 '<div id="card">' + '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Skills: ' + skills + '</h2>' +
                                 '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
@@ -242,7 +251,7 @@
             });
         }
 
-    }, 600);
+    }, 1500);
 
 
     if ('addEventListener' in window) {
