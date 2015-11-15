@@ -90,11 +90,27 @@
         <section id="main" style="width: 600px !important; text-align: left">
             <!--The Header With the picture-->
             <header>
-                <span class="avatar" ><img style="margin-left:  0 !important; margin-right: auto !important" src="" id="profilePic" width="200" height="200" alt="No avatar" /></span>
-                <h1 style="text-transform: uppercase;" id="name"></h1>
-                <p style="text-transform: uppercase;">
-                    <span id="description"></span></p>
-                <p id="skillText" style="display: none; text-transform: uppercase;">Skills: <span id="skills"></span></p>
+                <table style="width: 100%">
+                    <tr>
+                        <td style="height: 100%">
+                            <span class="avatar" ><img style="margin-left:  0 !important; margin-right: auto !important" src="" id="profilePic" width="200" height="200" alt="No avatar" /></span>
+                        </td>
+                        <td>
+                            <span style="text-align: right; vertical-align: top !important">Rating:</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1 style="text-transform: uppercase;" id="name"></h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="text-transform: uppercase;">
+                                <span id="description"></span></p>
+                            <p id="skillText" style="display: none; text-transform: uppercase;">Skills: <span id="skills"></span></p></td>
+                    </tr>
+                </table>
             </header>
             <p style="color: red; text-transform: uppercase;" id="error"></p>
             <footer>
@@ -151,9 +167,8 @@
             }
         } else {
             $(document).click(function() {
-                            alert("aoeu")
-                           if($('#star4').is(':checked')) { alert("it's checked"); }
-                        });
+                if($('#star4').is(':checked')) { alert("it's checked"); }
+            });
             var foundID = site.substring(site.indexOf('#') + 1);
             usersRef.once('value', function(snapshot) {
                 if (snapshot.hasChild(foundID)) {

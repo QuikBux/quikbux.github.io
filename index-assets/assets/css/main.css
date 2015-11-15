@@ -3269,12 +3269,13 @@ body.landing #header {
 /* Banner */
 
 #banner {
-    background-attachment: fixed;
+    /*background-attachment: fixed;
     background-color: #272833;
     background-image: url("../../images/background.jpeg");
     background-position: center center;
-    background-size: cover;
+    background-size: cover;*/
     box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+    background-color: #e74c3c;
     min-height: 100vh;
     position: relative;
     text-align: center;
