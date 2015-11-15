@@ -2,21 +2,22 @@
 <html>
 
 <head>
-    <title>Mundus</title>
+    <title>QuikBux</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
     <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
     <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
     <link rel="icon" href="icons/favicon.ico" />
     <noscript>
         <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
-    
     <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
-
-
+    <script src="assets/js/FireAuth.js"></script>
+    <script src="assets/js/account.js"></script>
 </head>
 
 <body class="is-loading">
@@ -24,72 +25,33 @@
     <div id="wrapper">
         <!-- Main -->
         <section id="main">
-        	<!--The Header With the picture-->
-            <header>
-                <span class="avatar"><img src="icons/apple-touch-icon-180x180.png" alt="" /></span>
-                <h1>QuikBux</h1>
-                <p>Make a quick buck by completing a small chore!</p>
-                <a href="index.html" class="button">Learn More</a>
-            </header>
 
-
-            <hr />
-
-            <!--All the Sign Up Stuff-->
-            <h2>Sign Up</h2>
-            <p>Already have an account? Login <a style="color: red" href="login.html">here</a></p>
-            
-            <p style="color: red" id="error"></p>
-
-            <form method="post" action="#">
-            	<!--All the text boxes-->
+            <h2 style="text-transform: uppercase;">Sign Up</h2>
+            <p style="text-transform: uppercase;">Already have an account? Login <a style="color: red" href="login.html">here</a></p>
+            <p style="color: red; text-transform: uppercase;" id="error"></p>
+            <form>
+                <!--All the text boxes-->
                 <div class="field">
-                    <input type="text" name="name" id="name" placeholder="Name" />
+                    <input required type="text" name="name" id="name" placeholder="Name" />
                 </div>
                 <div class="field">
-                    <input type="email" name="email" id="email" placeholder="Email" />
+                    <input required type="email" name="email" id="email" placeholder="Email" />
                 </div>
                 <div class="field">
-                    <input type="password" name="password" id="password" placeholder="Password" />
+                    <input required type="password" name="password" id="password" placeholder="Password" />
                 </div>
                 <div class="field">
-                    <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" />
+                    <input required type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" />
                 </div>
-
-                <!--Selecting the type of account-->
-                <div class="field">
-                    <div class="select-wrapper">
-                        <select name="department" id="department">
-                            <option value="">Worker</option>
-                            <option value="sales">Client</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <textarea name="message" id="message" placeholder="Status" rows="1"></textarea>
-                </div>
-
                 <!--Sign Up Button-->
-                <ul class="actions">
-                    <li><a href="main.html" id="signUp" class="button">Get Started</a></li>
-                </ul>
-
+                <!--<ul class="actions">-->
+                <button style="text-transform: uppercase;" id="signUp" class="button">Get Started</button>
+                <!--</ul>-->
             </form>
-
             <hr />
-
             <!--Social Network Buttons-->
-            <footer>
-                <ul class="icons">
-                    <li><a href="#" class="fa-twitter">Twitter</a></li>
-                    <li><a href="#" class="fa-instagram">Instagram</a></li>
-                    <li><a href="#" class="fa-facebook">Facebook</a></li>
-                </ul>
-            </footer>
-
+            <footer></footer>
         </section>
-
         <!-- Footer with Copyright -->
         <footer id="footer">
             <ul class="copyright">
@@ -100,28 +62,48 @@
     <!-- Scripts -->
     <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
     <script>
-    if ('addEventListener' in window) {
+
+    $("#signUp").click(function(e) {
+        e.preventDefault();
+
+        var userFormData = {};
+        $.each(['name', 'email', 'password', 'confirmPassword'], function(i, value){
+            userFormData[value] = $('#' + value).val();
+        })
+        
+        if (userFormData.password != userFormData.confirmPassword) {
+            $("#error").html("The password entered doesn't match the first password!");
+
+        } else {
+
+            ref.createUserWithEmail(userFormData.email, userFormData.password, function(userData) {
+            
+                console.log("Account creation succeeded!");
+                localStorage.setItem(ref.tokenName, userData.token);
+
+                usersRef.child(userData.uid).set({
+                    email: userFormData.email,
+                    name: userFormData.name,
+                    temp: false
+                });
+                setTimeout(function() {
+                    ref.loginWithEmail(userFormData.email, userFormData.password, true, function(){
+                        console.log("Succesfully authenticated!");
+                        window.location.href = 'config.html';  
+                    });
+
+                }, 1000);       
+            });
+        }
+    });
+
+      if ('addEventListener' in window) {
         window.addEventListener('load', function() {
             document.body.className = document.body.className.replace(/\bis-loading\b/, '');
         });
         document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
-        
-        $("#signUp").click(function(e) {
-	        var name = $("#name").val();
-	        var email = $("#email").val();
-			var password = $("#password").val();
-			var confirmPassword = $("#confirmPassword").val();
-			
-			if (password == confirmPassword) {
-				
-			}
-        });
-        
-        
     }
     </script>
-
-
 </body>
 
 </html>

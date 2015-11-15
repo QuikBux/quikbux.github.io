@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>QuikBux</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="icon" href="icons/favicon.ico" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script src="assets/js/FireAuth.js"></script>
+    <script src="assets/js/account.js"></script>
+</head>
+
+<body class="is-loading">
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <section id="main">
+            <h2 style="text-transform: uppercase;">Continue Sign Up Below</h2>
+            <p style="color: red; text-transform: uppercase;" id="error"></p>
+            <form>
+                <div class="field">
+                    <input type="file" id="file" name="file" required/>
+                </div>
+                <div class="field">
+                    <input type="text" id="skills" name="skills" placeholder="Skills" />
+                </div>
+                <div class="field">
+                    <input type="text" id="city" placeholder="City" name="City" />
+                </div>
+                <div class="field">
+                    <div class="select-wrapper">
+                        <select style="text-transform: uppercase;" name="department" id="department">
+                            <option value="">worker</option>
+                            <option value="sales">client</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <textarea required name="status" id="status" placeholder="Please tell us about yourself" rows="1"></textarea>
+                </div>
+                <a style="text-transform: uppercase;" id="done" class="button">Done</a>
+            </form>
+            <hr />
+            <!--Social Network Buttons-->
+            <footer></footer>
+        </section>
+        <!-- Footer with Copyright -->
+        <footer id="footer">
+            <ul class="copyright">
+                <li>&copy; QuikBux 2015, All Rights Reserved</li>
+            </ul>
+        </footer>
+    </div>
+    <!-- Scripts -->
+    <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+   
+    <script>
+    var ref = new Firebase('https://makehacks.firebaseio.com/');
+    var usersRef = ref.child('users');
+
+    $("#done").click(function(e) {
+        var info = {
+            type: $("#department option:selected").text(),
+            city: $("#city").val(),
+            description: $("#status").val(),
+            pic: "",
+            skills: $("#skills").val()
+        }
+        var files = $("#file")[0].files;
+
+        $.ajax({
+            type: "GET",
+            url: "https://maps.googleapis.com/maps/api/geocode/xml?address=" + encodeURIComponent(city) + "&key=AIzaSyCph8xf4Aw1o3-5HkTR_uOKIA_N4Ms5naY",
+            dataType: "xml",
+            success: success,
+            error: error
+        });
+
+        function success() {
+            //converts file to base64 encoded string
+            if (files.length > 0 && files[0].type.substring(0, 5) == 'image') {
+                info.pic = btoa(files[0]);
+            }
+
+            //verify whether the user has completed the form
+            if (info.description != "") {
+                $.each(['pic', 'type', 'description', 'city', 'skills'], function(i, value) {
+
+                    console.log(value + " " + user)
+
+                    usersRef.child(user).child(value).set(info[value]);
+                });
+
+                usersRef.child(user).child('temp').set(true);
+
+                window.location.href = "home.html";
+            } else {
+                $("#error").html("Please enter a description.");
+            }
+        }
+
+        function error() {
+            $("#error").html("Please enter a valid city");
+        }
+
+    });
+
+
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function() {
+            document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+    </script>
+</body>
+
+</html>

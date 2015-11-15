@@ -1,0 +1,289 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>QuikBux</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="icon" href="icons/favicon.ico" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script src="assets/js/FireAuth.js"></script>
+    <script src="assets/js/account.js"></script>
+    <!-- Compiled and minified CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="assets/css/animate.css" />
+</head>
+
+<body class="is-loading">
+    <!-- Wrapper -->
+    <!--<div id="logout">
+        <button class="button" id="logoutBtn">Log Out</button>-->
+    <div id="wrapper">
+        <div id="navbar">
+            <h1 id="brand">QuikBux</h1>
+            <ul id="list">
+                <li><a href="index.html" onclick="ref.logout(); window.location.href='index.html';">Logout</a></li>
+                <li><a id="finding" href="home.html">Find Workers</a></li>
+                <li><a id="listings" href="posts.html">My Job Listings</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+            </ul>
+        </div>
+        <br/>
+        <h1 style="display: none;" id="welcome">Welcome</h1>
+        <br/>
+        <div id="containerTitle"></div>
+        <div id="myContainer">
+            <section class="animated pulse" style="width: 60%; text-transform: uppercase;" id="main">
+                <h2>Post a Job Listing</h2>
+                <p style="color: red; text-transform: uppercase;" id="error"></p>
+                <form>
+                    <div class="field">
+                        <input style="background-color: white; text-transform: uppercase; border-radius: 0px;" type="text" id="jobType" name="jobType" placeholder="Enter type of job you require" />
+                    </div>
+                    <div class="field">
+                        <div class="select-wrapper">
+                            <select style="text-transform: uppercase;" name="money" id="money">
+                                <option value="">$0 - $50</option>
+                                <option value="">$50 - $100</option>
+                                <option value="">$150 - $200</option>
+                                <option value="">$200 - $500</option>
+                                <option value="">$500 - $1000</option>
+                                <option value="">$1000 - $5000</option>
+                                <option value="">$5000 - $10K</option>
+                                <option value="">$10K - $30K</option>
+                                <option value="">$30K - $50K</option>
+                                <option value="">> $50K</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p style="text-transform: uppercase;"># of Hours: </p>
+                    <div class="field">
+                        <div class="select-wrapper">
+                            <select style="text-transform: uppercase;" name="time" id="time">
+                                <option value="">< 1</option>
+                                        <option value="">1 - 3</option>
+                                        <option value="">4 - 5</option>
+                                        <option value="">6 - 10</option>
+                                        <option value="">10 - 15</option>
+                                        <option value="">15 - 20</option>
+                                        <option value="">20 - 24</option>
+                                        <option value="">24 - 30</option>
+                                        <option value="">30 - 48</option>
+                                        <option value="">> 48</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <textarea style="background-color: white; width: 100%; margin: 0; height: 200px; text-transform: uppercase;" required name="writePost" id="writePost" placeholder="Please specify what you would like" rows="30" col="200"></textarea>
+                    </div>
+                    <button style="font-weight: light; background-color: white; font-size: 1.3em; text-transform: uppercase;" class="button" id="makePost">Post</button>
+                </form>
+                <hr />
+                <!--Social Network Buttons-->
+                <footer></footer>
+            </section>
+        </div>
+        <br/>
+        <h1 id="tableTitle"></h1>
+        <div id="tableView">
+        </div>
+        <!-- Footer with Copyright -->
+        <footer id="footer">
+            <ul class="copyright">
+                <li>&copy; QuikBux 2015, All Rights Reserved</li>
+            </ul>
+        </footer>
+    </div>
+    <!-- Scripts -->
+    <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+    <script>
+    setTimeout(function() {
+
+        $("#welcome").html($("#welcome").html() + " " + userName + "!");
+        $("#welcome").addClass("animated slow fadeIn");
+
+        $("#welcome").css("display", "block");
+
+        console.log(userType);
+
+        if (userType == "client") {
+            $("#tableTitle").html("My Job Listings");
+            $("#tableView").html("");
+            $("#listings").html("My Job Listings");
+            $("#myContainer").html("");
+            $("#finding").html("Find Workers");
+
+            buildPostHtml();
+
+            appendListingsTable();
+        } else if (userType == "worker") {
+            $("#tableView").html("");
+            $("#containerTitle").html("Your Public Profile: ");
+            $("#listings").html("My Public Profile");
+            $("#myContainer").html("");
+            $("#finding").html("Find Jobs");
+
+            appendWorkerTable();
+        }
+
+        $("#makePost").click(function(e) {
+            e.preventDefault();
+            var jobType = $("#jobType").val();
+            var description = $("#writePost").val();
+            var wage = $("#money option:selected").text();
+            var hours = $("#time option:selected").text();
+
+            var postRef = ref.child('posts').push({
+                name: userName,
+                description: description,
+                jobtype: jobType,
+                wage: wage,
+                city: userCity,
+                hours: hours,
+                uid: user
+            });
+
+            usersRef.child(user).child('posts').child(postRef.key()).set(postRef.key());
+
+        });
+
+        function buildPostHtml() {
+            var str = "";
+
+            str += '<section class="animated pulse" style="width: 500px; text-transform: uppercase;" id="main">' +
+                '<h2>Post a Job Listing</h2>' +
+                '<p style="color: red; text-transform: uppercase;" id="error"></p>' +
+                '<form>' +
+                '<div class="field">' +
+                '<input style="background-color: white; text-transform: uppercase; border-radius: 0px;" type="text" id="jobType" name="jobType" placeholder="Enter type of job you require" />' +
+                '</div>' + '<p style="text-transform: uppercase;">Amount of Pay ($) </p>' +
+                '<div class="field">' +
+                '<div class="select-wrapper">' +
+                '<select style="text-transform: uppercase;" name="money" id="money">' + '<option value="">$0 - $50</option>' + '<option value="">$50 - $100</option>' + '<option value="">$150 - $200</option>' + '<option value="">$200 - $500</option>' + '<option value="">$500 - $1000</option>' + '<option value="">$1000 - $5000</option>' + '<option value="">$5000 - $10K</option>' + '<option value="">$10K - $30K</option>' + '<option value="">$30K - $50K</option>' + '<option value="">> $50K</option>' + '</select>' + '</div>' + '</div>' + '<p style="text-transform: uppercase;"># of Hours: </p>' + '<div class="field">' + '<div class="select-wrapper">' + '<select style="text-transform: uppercase;" name="time" id="time">' + '<option value="">' + '< 1</option>' + '<option value="">1 - 3</option>' + '<option value="">4 - 5</option>' + '<option value="">6 - 10</option>' + '<option value="">10 - 15</option>' + '<option value="">15 - 20</option>' + '<option value="">20 - 24</option>' + '<option value="">24 - 30</option>' + '<option value="">30 - 48</option>' + '<option value="">> 48</option>' + '</select>' + '</div>' + '</div>' + '<div class="field">' + '<textarea style="background-color: white; width: 100%; margin: 0; height: 200px; text-transform: uppercase;" required name="writePost" id="writePost" placeholder="Please specify what you would like" rows="30" col="200"></textarea>' + '</div>' + '<button style="font-weight: light; background-color: white; font-size: 1.3em; text-transform: uppercase;" class="button" id="makePost">Post</button>' + '</form>' + '<hr />' + '<footer></footer>' + '</section>';
+
+
+            $("#myContainer").append(str);
+        }
+
+
+        function appendWorkerTable() {
+            var str = "";
+
+            var name = userName;
+            var description = userDescription;
+            var pic = userPic;
+            var city = userCity;
+            var skills = userSkills;
+
+            str += '<section style="height: 500px; width: 100%; overflow: scroll;" id="main">' +
+                '<div id="card">' + '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">' + skills + '</h2>' +
+                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                '<button style="text-transform: uppercase;" href="#" id="choose" class="button view">View</button>' +
+                '<button style="text-transform: uppercase;" href="#" class="choose button watch">Watch</button>' + '</div>' +
+                '</section>';
+
+
+            $("#myContainer").append(str);
+
+        }
+
+        function appendListingsTable() {
+            var count = 0;
+
+            ref.child("posts").on('value', function(snapshot) {
+                var str = "<table>";
+                var myNode = document.getElementById("tableView");
+
+                while (myNode.firstChild) {
+                    myNode.removeChild(myNode.firstChild);
+                }
+
+                console.log(myNode.firstChild);
+
+                snapshot.forEach(function(childSnapshot) {
+                    if (childSnapshot.val().name == userName) {
+
+                        var name = childSnapshot.val().name;
+                        var email = childSnapshot.val().email;
+                        var description = childSnapshot.val().description;
+                        var pic = childSnapshot.val().pic;
+                        var city = childSnapshot.val().city;
+                        var skills = childSnapshot.val().skills;
+                        var hours = childSnapshot.val().hours;
+                        var wage = childSnapshot.val().wage;
+                        var jobType = childSnapshot.val().jobtype;
+                        var key = childSnapshot.key();
+
+
+                        if (count == 2) {
+
+                            str += '<br/>' + '<td id="' + key + '">' +
+                                '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Job Type: ' + jobType + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">Total Pay: ' + wage + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="delete" class="button">Delete</button>' +
+                                '</section>' +
+                                '</td>' + '</tr>';
+
+                            count = 0;
+                        } else {
+
+                            if (count == 0)
+                                str += '<tr>'
+
+                            str += '<td id="' + key + '">' +
+                                '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Job Type: ' + jobType + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">Total Pay: ' + wage + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="delete" class="button">Delete</button>' +
+                                '</section>' +
+                                '</td>';
+
+                            count++;
+                        }
+
+                    }
+
+                });
+                $("#tableView").append(str + "</table>");
+            });
+
+            $(document).on("click", "#delete", function(e) {
+                e.preventDefault();
+
+                var id = $(this).parent().parent().prop("id");
+
+                ref.child("posts").child(id).remove();
+
+            });
+        }
+
+
+    }, 600);
+
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function() {
+            document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+    </script>
+</body>
+
+</html>

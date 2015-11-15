@@ -38,6 +38,7 @@ Firebase.prototype.tokenName = "myToken";
 */
 Firebase.prototype.checkForAvailableToken = function(foundToken, noToken){
     var token = localStorage.getItem(this.tokenName);
+    console.log(token)
     if(token == null){
         token = "No Token";
     }
@@ -46,7 +47,7 @@ Firebase.prototype.checkForAvailableToken = function(foundToken, noToken){
             console.log("No token found");
             noToken(error);
         } else {
-            console.log("Existing token found");
+            console.log("Existing token found " + authData);
             foundToken(authData);
         }
     });
@@ -107,7 +108,7 @@ Firebase.prototype.loginWithEmail = function(email, password, token, callback){
         } else {
             console.log("Authenticated successfully with payload:", authData);
             if(token){
-                console.log(authData.token)
+                console.log(ref.tokenName + " " + authData.token)
                 localStorage.setItem(ref.tokenName, authData.token);
             }
 
@@ -487,8 +488,11 @@ Firebase.prototype.loginWithTwitter = function(options, callback){
 * ref.logout();
 */
 Firebase.prototype.logout = function(){
+    var ref = this;
     this.unauth();
-    localStorage.removeItem(this.tokenName);
+    localStorage.removeItem(ref.tokenName);
+    console.log(localStorage.getItem(this.tokenName))
+    
 }
 
 /**
@@ -506,8 +510,9 @@ Firebase.prototype.logout = function(){
 * });
 */
 Firebase.prototype.authChangeListener = function(onLogin, onLogout){
+    var ref = this
     this.onAuth(function(authData){
-        if(this.getAuth() == null){
+        if(ref.getAuth() == null){
             //not logged in
             onLogin(authData);
         }else{
