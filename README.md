@@ -1,1 +1,5 @@
 # quikbux.github.io
+
+QuikBux is a simple web and iOS app that lets people to simply hire others for small jobs to earn quick cash. Workers have an online profile that others can see and follow. Clients can leave reviews of the workers. Clients can also post new jobs for workers to find and contact them. Everyone can see other's public profiles and contact them for a job. It is a very significant app because many people struggle to find credible people that they can trust to do their jobs. For example, it would be nice to hire movers to help move furniture out of the house. You can simply go to our app, and post a job which will then be seen by other workers that are interested. The app was built by Sriharsha Guduguntla, Ayush Jain, Kiran Kunigiri, and Rishan Girish in MakeHacks 10/15/15. The web development was done by Sriharsha and Ayush while the iOS Development was done by Kiran and Rishan. The app won first prize for the Dailymotion social media hack and 5th overall out of about 45-50 other teams. 
+
+![alt tag](https://github.com/sguduguntla/quikbux.github.io/blob/master/icons/apple-touch-icon-180x180.png)
