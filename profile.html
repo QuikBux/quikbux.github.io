@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>QuikBux</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="icon" href="icons/favicon.ico" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script src="assets/js/FireAuth.js"></script>
+    <script src="assets/js/account.js"></script>
+</head>
+
+<body class="is-loading">
+
+    <style>
+    .rating {
+        
+    }
+
+    /* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+       follow these rules. Every browser that supports :checked also supports :not(), so
+       it doesn’t make the test unnecessarily selective */
+    .rating:not(:checked) > input {
+        position:absolute;
+        top:-9999px;
+        clip:rect(0,0,0,0);
+    }
+
+    .rating label {
+        padding-right: 0px;
+        border: none;
+
+    }
+
+    .rating:not(:checked) > label:before {
+        letter-spacing: 0;
+        content: '★ ';
+
+    }
+
+    .rating > input:checked ~ label {
+        color: #f70;
+        
+    }
+
+    .rating:not(:checked) > label:hover,
+    .rating:not(:checked) > label:hover ~ label {
+        color: gold;
+       
+    }
+
+    .rating > input:checked + label:hover,
+    .rating > input:checked + label:hover ~ label,
+    .rating > input:checked ~ label:hover,
+    .rating > input:checked ~ label:hover ~ label,
+    .rating > label:hover ~ input:checked ~ label {
+        color: #ea0;
+        
+    }
+
+    .rating > label:active {
+        position:relative;
+        top:2px;
+        left:2px;
+    }
+    </style>
+    <!-- Wrapper -->
+    <div id="wrapper">
+        <!-- Main -->
+        <div id="navbar">
+            <h1 id="brand">QuikBux</h1>
+            <ul id="list">
+                <li><a onclick="ref.logout(); window.location.href='index.html';">Logout</a></li>
+                <li><a id="finding" href="home.html">Workers</a></li>
+                <li><a id="listings" href="posts.html">Job Listings</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+            </ul>
+        </div>
+        <br>
+        <section id="main" style="width: 600px !important; text-align: left">
+            <!--The Header With the picture-->
+            <header>
+                <table style="width: 100%">
+                    <tr>
+                        <td style="height: 100%">
+                            <span class="avatar" ><img style="margin-left:  0 !important; margin-right: auto !important" src="" id="profilePic" width="200" height="200" alt="No avatar" /></span>
+                        </td>
+                        <td>
+                            <span style="text-align: right; vertical-align: top !important">Rating:</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1 style="text-transform: uppercase;" id="name"></h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="text-transform: uppercase;">
+                                <span id="description"></span></p>
+                            <p id="skillText" style="display: none; text-transform: uppercase;">Skills: <span id="skills"></span></p></td>
+                    </tr>
+                </table>
+            </header>
+            <p style="color: red; text-transform: uppercase;" id="error"></p>
+            <footer>
+                <button style="color: #e74c3c !important; border: none" id="toggleReview">SEE REVIEWS</button>
+            <hr>
+                <header id="reviewHeader">
+                </header>
+                <header id="userReviews">
+                </header>
+            </footer>
+        </section>
+        <!-- Footer with Copyright -->
+        <footer id="footer">
+            <ul class="copyright">
+                <li>&copy; QuikBux 2015, All Rights Reserved</li>
+            </ul>
+        </footer>
+    </div>
+    <!-- Scripts -->
+    <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+    <script>
+    setTimeout(main, 1000);
+
+    function main() {
+
+        if (userType == "client") {
+
+            $("#tableTitle").html("Here are all the available workers near your area.");
+            $("#listings").html("My Job Listings");
+            $("#finding").html("Find Workers");
+
+        } else if (userType == "worker") {
+            $("#tableTitle").html("Here are all the job listings posted by people near you.");
+            $("#listings").html("My Public Profile");
+            $("#finding").html("Find Jobs");
+        }
+
+        var site = window.location.href;
+        if (site.indexOf('#') == -1 || site.indexOf('#') == site.length - 1) {
+            $("#name").text(userName);
+            $("#description").text(userDescription);
+            $("#reviewHeader").html("");
+
+            console.log(userPic)
+
+            $("#profilePic").attr('src', userPic);
+
+
+            if (userType == "client") {
+                $("#skillText").css("display", "none");
+            } else if (userType == "worker") {
+                $("#skills").text(userSkills);
+                $("#skillText").css("display", "block");
+            }
+        } else {
+            $(document).click(function() {
+                if($('#star4').is(':checked')) { alert("it's checked"); }
+            });
+            var foundID = site.substring(site.indexOf('#') + 1);
+            usersRef.once('value', function(snapshot) {
+                if (snapshot.hasChild(foundID)) {
+                    var users = snapshot.val();
+                    var adid = foundID;
+                    foundID = users[foundID];
+
+
+                    $("#name").text(foundID.name);
+                    $("#description").text(foundID.description);
+                    $("#profilePic").attr('src', foundID.pic);
+
+                    if (foundID.type == "client") {
+                        $("#skillText").css("display", "none");
+                        $("#reviewHeader").html("");
+                    } else if (foundID.type == "worker") {
+                        $("#skills").text(foundID.skills);
+                        $("#reviewHeader").html('<h2 style="text-transform: uppercase; text-align: center"><u>Write a Review</u></h2>' + '<textarea style="" required name="review" id="review" placeholder="Leave a review" rows="10"></textarea> <fieldset style="margin-top: 1em; text-align: center" class="rating"><legend>RATE THE QUALITY OF WORK </legend><input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Rocks!"></label><input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Pretty good"></label><input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Meh"></label><input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Kinda bad"></label><input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Sucks big time"></label></fieldset><button style="width: 100%; margin-top: 3em" class="button review">Submit Review</button>');
+                        $("#skillText").css("display", "block"); 
+
+
+                        //submit a review                       
+                        $(".review").click(function() {
+                            var description = $("#review").val();
+                            var rating = getRating();
+                            usersRef.child(adid).child('reviews').push({
+                                review: description,
+                                rating: rating,
+                                author: userName,
+                                authorID: user,
+                            })
+                            location.reload();
+                        });
+
+                        $("#userReviews").hide();
+                        usersRef.child(adid).child('reviews').once('value', function (snapshot) {
+                            snapshot.forEach(function  (childSnapshot) {
+                                console.log(childSnapshot.val());
+                                $("#userReviews").append('<div style="text-align: left"><span>Reviewer: ' + childSnapshot.val().author + '</span><br><span>Rating: ' + childSnapshot.val().rating + ' stars</span><br><span>Review: ' + childSnapshot.val().review + '</span> </div><hr>');
+                            })
+                        })
+
+                        $("#toggleReview").click(function() {
+                            $("#reviewHeader").toggle();
+                            $("#userReviews").toggle();
+
+
+                        })
+
+                        function getRating(){
+                            if($('input:radio:checked').length > 0){
+                                return $('input:radio:checked').prop('id').substring(4)
+                            }
+
+                            return -1;
+                        }
+
+                    }
+                } else {
+                    $("#name").text("No user found!")
+                }
+            });
+        }
+    }
+
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function() {
+            document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+    </script>
+    <br>
+    <br><br><br>
+</body>
+
+</html>

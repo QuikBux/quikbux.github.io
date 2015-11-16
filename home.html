@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>QuikBux</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <link rel="icon" href="icons/favicon.ico" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script src="assets/js/FireAuth.js"></script>
+    <script src="assets/js/account.js"></script>
+    <!-- Compiled and minified CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCph8xf4Aw1o3-5HkTR_uOKIA_N4Ms5naY">
+    </script>
+    <script type="text/javascript" src="googlemaps.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+
+</head>
+
+<body class="is-loading">
+    <!-- Wrapper -->
+    <!--<div id="logout">
+        <button class="button" id="logoutBtn">Log Out</button>-->
+    <div id="wrapper">
+        <div id="navbar">
+            <h1 id="brand">QuikBux</h1>
+            <ul id="list">
+                <li id="logOut"><a onclick="ref.logout(); window.location.href='index.html';">Logout</a></li>
+                <li><a id="finding" href="home.html"></a></li>
+                <li><a id="listings" href="posts.html"></a></li>
+                <li><a href="profile.html">My Profile</a></li>
+            </ul>
+        </div>
+
+        <br/>
+
+        <section class="jumbotron" id="main">
+            <img style="float: left; margin: 0; position: relative; bottom: 66px; right: 45px;" src="icons/apple-touch-icon-180x180.png" height="300" width="370"/>
+
+            <h1 style="display: none; float: right" id="welcome">Welcome</h1>
+            <h2 style="float: right">QuikBux, no more searching, only earning</h1>
+            <h3 style="float: right" id="tableTitle">Find all available workers near you now</h3>
+            <button style="position: relative; top: 40px; left: 400px; float: right" class="button" id="close">Close</button>
+        </section>
+  
+        <div id="tableView">
+        </div>
+        <br/>
+        <div id="map-canvas" style="z-index: 50"></div>
+        <!-- Footer with Copyright -->
+        <footer id="footer">
+            <ul class="copyright">
+                <li>&copy; QuikBux 2015, All Rights Reserved</li>
+                <li><a href="home.html">Back to Top</a></li>
+            </ul>
+        </footer>
+    </div>
+    <!-- Scripts -->
+    <!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+    <script>
+      var arr = [];
+    setTimeout(function() {
+
+        $("#welcome").html($("#welcome").html() + " " + userName + "!");
+        $("#welcome").addClass("animated slow fadeIn");
+        $("#welcome").css("display", "block");
+
+        $("#close").click(function(e) {
+            e.preventDefault();
+            $(".jumbotron").fadeOut();
+        });
+
+        console.log(userType);
+
+
+        if (userType == "client") {
+
+            $("#tableTitle").html("Here are all the available workers near your area.");
+            $("#listings").html("My Job Listings");
+            $("#finding").html("Find Workers");
+
+            appendClientTable();
+
+            $(document).on("click", ".view", function(e) {
+                e.preventDefault();
+                window.location.href = 'profile.html#' + $(this).parent().parent().parent().prop("id");
+            
+            });
+
+
+        } else if (userType == "worker") {
+            $("#tableTitle").html("Here are all the job listings posted by people near you.");
+            $("#listings").html("My Public Profile");
+            $("#finding").html("Find Jobs");
+
+
+            appendWorkerTable();
+
+            $(document).on("click", ".view", function(e) {
+                e.preventDefault();
+                window.location.href = 'profile.html#' + $(this).parent().parent().prop("id");
+            
+            });
+
+        }
+
+         function appendWorkerTable() {
+            var count = 0;
+
+            ref.child("posts").on('value', function(snapshot) {
+                var str = "<table>";
+                var myNode = document.getElementById("tableView");
+
+                while (myNode.firstChild) {
+                    myNode.removeChild(myNode.firstChild);
+                }
+
+                snapshot.forEach(function(childSnapshot) {
+                    if (childSnapshot.val().type = "client") {
+                        
+                        var name = childSnapshot.val().name;
+                        var email = childSnapshot.val().email;
+                        var description = childSnapshot.val().description;
+                        var pic = childSnapshot.val().pic;
+                        var city = childSnapshot.val().city;
+                        var skills = childSnapshot.val().skills;
+                        var hours = childSnapshot.val().hours;
+                        var wage = childSnapshot.val().wage;
+                        var jobType = childSnapshot.val().jobtype;
+                        var adid = childSnapshot.val().uid;
+
+
+
+                        if (count == 2) {
+
+                            str +=  '<td id="' + adid + '">' +
+                                '<section class="animated fadeIn" style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Job Type: ' + jobType + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">Total Pay: ' + wage + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="choose" class="button view">View</button>' +
+                                '<button style="text-transform: uppercase;" href="#" class="choose button">Watch</button>' +
+                                '</section>' +
+                                '</td>' + '</tr>';
+
+                            count = 0;
+                        } else {
+
+                            if (count == 0)
+                                str += '<tr>'
+
+                            str +='<td id="' + adid + '">' +
+                                '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Job Type: ' + jobType + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">Total Pay: ' + wage + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="choose" class="button view">View</button>' +
+                                '<button style="text-transform: uppercase;" href="#" class="choose button">Watch</button>' +
+                                '</section>' +
+                                '</td>';
+                            count++;
+                        }
+
+
+                    }
+
+                });
+                
+                $("#tableView").append(str + "</table>");
+            });
+        }
+
+        
+
+
+
+        function appendClientTable() {
+            var current = "";
+            var count = 0;
+            var str = "<table>";
+
+            ref.child("users").once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    if (childSnapshot.val().type == 'worker') {
+                        console.log(childSnapshot.val().name);
+
+                        var name = childSnapshot.val().name;
+                        var email = childSnapshot.val().email;
+                        var description = childSnapshot.val().description;
+                        var pic = childSnapshot.val().pic;
+                        var city = childSnapshot.val().city;
+                        var skills = childSnapshot.val().skills;
+                        var userid = childSnapshot.key();
+
+
+                        if (count == 2) {
+
+                            str += '<td id="' + userid + '">' +
+                                '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<div id="card">' + '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Skills: ' + skills + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="choose" class="button view">View</button>' +
+                                '<button style="text-transform: uppercase;" href="#" class="choose button watch">Watch</button>' + '</div>' +
+                                '</section>' +
+                                '</td>' + '</tr>';
+
+
+                            count = 0;
+                        } else {
+
+                            if (count == 0)
+                                str += '<tr>'
+
+                            str += '<td id="' + userid + '">' +
+                                '<section style="height: 300px; width: 200px; overflow: scroll;" id="main">' +
+                                '<div id="card">' + '<h2 id="occupation" style="text-transform: uppercase;  font-size: 1.4em;">Skills: ' + skills + '</h2>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">' + description + '</h4>' +
+                                '<h4 id="description" style="font-size: 1em; text-transform: uppercase;">City: ' + city + '</h4>' +
+                                '<h3 id="name" style=" font-size: 1em; text-transform: uppercase;">Submitted by ' + name + '</h3>' +
+                                '<button style="text-transform: uppercase;" href="#" id="choose" class="button view">View</button>' +
+                                '<button style="text-transform: uppercase;" href="#" class="choose button watch">Watch</button>' + '</div>' +
+                                '</section>' +
+                                '</td>';
+
+                            count++;
+                        }
+
+
+
+
+                    }
+
+                });
+                $("#tableView").append(str + "</table>");
+            });
+        }
+
+    }, 1500);
+
+
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function() {
+            document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+    </script>
+</body>
+
+</html>
