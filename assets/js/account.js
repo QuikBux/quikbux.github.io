@@ -35,7 +35,11 @@ ref.authChangeListener(
     		if(isConfigured && (site.indexOf('config.html') > -1 || site.indexOf('signup.html') > -1 || site.indexOf('login.html') > -1)){
     			window.location.href = 'home.html';
     		}else if(!isConfigured && site.indexOf('config.html') == -1){
+<<<<<<< HEAD
     		    window.location.href = 'config.html';
+=======
+    		    //window.location.href = 'config.html';
+>>>>>>> origin/master
     		}
     	});
 
