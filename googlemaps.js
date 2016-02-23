@@ -20,8 +20,8 @@
                  success: processXML,
                  error: error
              });
-         })
-     })
+         });
+     });
 
      var mapOptions = {
          center: new google.maps.LatLng(0, 0),
